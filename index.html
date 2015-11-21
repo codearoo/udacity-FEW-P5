@@ -16,13 +16,11 @@
 <body>
     <div class="container-fluid">
         <div class="searchbar col-lg-12">
-            <input type="text" data-bind="textInput: searchString"/>
+            <input type="text" data-bind="textInput: searchString, event: { keyup: ShowSearchedMarkers }"/>
         </div>
         <div class="places">
-            <ul data-bind="foreach: places">
-                <!--only make the item visible if name contains the search string.-->
-                <li data-bind="visible: 
-    $data.toUpperCase().search($root.searchString().toUpperCase()) >= 0">
+            <ul data-bind="foreach: placesToShow">
+                <li>
                     <label data-bind="text: $data, click: $root.selectPlace"></label>
                 </li>
             </ul>

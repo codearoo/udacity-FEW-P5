@@ -1,12 +1,10 @@
-﻿// This script file is to load up call back method for the maps to have upon load.
-
-var map;
+﻿var map;
 var infowindow;
 var service;
 
 function initMap() {
     //var pyrmont = { lat: -33.867, lng: 151.195 };
-    var pyrmont = {lat: 38.925979, lng: -77.035176 };
+    var pyrmont = { lat: 38.925979, lng: -77.035176 };
 
     map = new google.maps.Map(document.getElementById('map'), {
         center: pyrmont,
@@ -89,12 +87,51 @@ function selectOnlyThisMarker(marker) {
     animateMarker(marker);
 };
 
+function showOnlyTheseMarkers(markers) {
+    // remove all markers.
+    var listMarkers = theView.markers();
+    for (var i in listMarkers) {
+        var marker = listMarkers[i];
+        marker.setMap(null);
+    }
+
+    // now only show the given markers.
+    for (var i in markers) {
+        var marker = markers[i];
+        marker.setMap(map);
+    }
+};
+
+function showOnlyMarkersInSearch() {
+    // remove all markers.
+    var listMarkers = theView.markers();
+    for (var i in listMarkers) {
+        var marker = listMarkers[i];
+        marker.setMap(null);
+    }
+
+    // get places in the search and get the markers for them.
+    // show only these markers.
+    var listPlaces = theView.placesToShow();
+    for (var i in listPlaces) {
+        var place = listPlaces[i];
+        var marker = theView.GetMarkerByPlace(place);
+        marker.setMap(map);
+    }
+
+};
+
 function animateMarker(marker) {
     if (typeof marker === "undefined") throw Error("'marker' missing.");
     marker.setAnimation(google.maps.Animation.BOUNCE);
 };
 
-function removeMarker(marker) {
+function showMarker(marker) {
+    if (typeof marker === "undefined") throw Error("'marker' missing.");
+    marker.setMap(map);
+};
+
+function hideMarker(marker) {
     if (typeof marker === "undefined") throw Error("'marker' missing.");
     marker.setMap(null);
 };
