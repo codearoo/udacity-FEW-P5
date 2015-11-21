@@ -2,6 +2,7 @@
 var infowindow;
 var service;
 
+// async method that gets called when Google map returns.
 function initMap() {
     //var pyrmont = { lat: -33.867, lng: 151.195 };
     var pyrmont = { lat: 38.925979, lng: -77.035176 };
@@ -33,6 +34,7 @@ function initMap() {
     }
 }
 
+
 function callback(results, status) {
     if (typeof results === "undefined") throw Error("'results' missing.");
     if (typeof status === "undefined") throw Error("'status' missing.");
@@ -41,6 +43,9 @@ function callback(results, status) {
         for (var i = 0; i < results.length; i++) {
             createMarker(results[i]);
         }
+    }
+    else {
+        console.log("Problem with Google Places service.");
     }
 }
 
@@ -150,6 +155,8 @@ function AddNYTimesLookupToMarker(marker, placeName) {
             // Need to set the content again after the data arrives.
             infowindow.setContent(getMarkerHTML(placeName, nytimesData, nytimesDataURL));
         }
+    }).fail(function () {
+        infowindow.setContent(getMarkerHTML(placeName) + "Could not retrieve data.")
     });
 
     infowindow.setContent(getMarkerHTML(placeName));

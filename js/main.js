@@ -1,4 +1,5 @@
 ﻿
+// The main ModelView used with Knockout.
 function ModelView() {
     var self = this;
     self.places = ko.observableArray([
@@ -12,6 +13,8 @@ function ModelView() {
     self.searchString = ko.observable("");
     self.markers = ko.observableArray([]);
 
+    // dynamic array that will list places only containing
+    // the searchString.
     self.placesToShow = ko.pureComputed(function () {
         var retvalue = [];
         for (var i in self.places()) {
@@ -23,8 +26,8 @@ function ModelView() {
         return retvalue;
     });
 
+    // shows the appropriate markers on the map.
     self.ShowSearchedMarkers = function () {
-        console.log(self.searchString());
         var listMarkers = [];
         var listPlaces = self.placesToShow();
         for (var i in listPlaces) {
@@ -53,6 +56,7 @@ function ModelView() {
         return self.markers()[name.toUpperCase()];
     };
 
+    // select the map marker and show info window.
     self.selectPlace = function (placeName) {
         if (typeof placeName === "undefined") throw Error("'placeName' missing.");
         var marker = theView.GetMarkerByPlace(placeName);
