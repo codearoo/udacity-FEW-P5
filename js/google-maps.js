@@ -15,10 +15,11 @@ function initMap() {
 
     infowindow = new google.maps.InfoWindow();
 
-    var places = octopus.GetPlaces();
+    var places = theView.places();
 
     function addMarker(place) {
         if (typeof place === "undefined") throw Error("'place' missing.");
+
         var service = new google.maps.places.PlacesService(map);
         service.nearbySearch({
             location: pyrmont,
@@ -35,6 +36,9 @@ function initMap() {
 }
 
 function callback(results, status) {
+    if (typeof results === "undefined") throw Error("'results' missing.");
+    if (typeof status === "undefined") throw Error("'status' missing.");
+
     if (status === google.maps.places.PlacesServiceStatus.OK) {
         for (var i = 0; i < results.length; i++) {
             createMarker(results[i]);
@@ -43,6 +47,8 @@ function callback(results, status) {
 }
 
 function createMarker(place) {
+    if (typeof place === "undefined") throw Error("'place' missing.");
+
     var placeLoc = place.geometry.location;
     var marker = new google.maps.Marker({
         map: map,
@@ -50,7 +56,7 @@ function createMarker(place) {
         animation: google.maps.Animation.DROP
     });
 
-    octopus.AddMarker(place.name, marker);
+    theView.AddMarker(place.name, marker);
 
     // this is to make them bounce if clicked on.
     // but we want that to work off the LI item clicked on.
@@ -58,50 +64,62 @@ function createMarker(place) {
     marker.addListener('click', toggleBounce);
 
     function toggleBounce() {
-        if (marker.getAnimation() !== null) {
+        if (marker.getAnimation() !== null)
             marker.setAnimation(null);
-        }
-        else {
-            // Stop all other markers from bouncing.
-            var listMarkers = octopus.GetMarkers();
-            for (var i in listMarkers) {
-                var m = listMarkers[i];
-                m.setAnimation(null);
-            }
-
-            // and only animate this one.
-            marker.setAnimation(google.maps.Animation.BOUNCE);
-        }
+        else
+            selectOnlyThisMarker(marker);
     };
 
-    var placeName = place.name;
     google.maps.event.addListener(marker, 'click', function () {
-        if (typeof placeName === "undefined") throw Error("'placeName' missing.");
-        var nytimesURL = "http://api.nytimes.com/svc/search/v2/articlesearch.json?q="
-                + placeName + "&api-key=bd91481bf8a206b38397217ce23f51a7:2:73398314";
-
-        $.getJSON(nytimesURL, function (data) {
-            if (data.response.docs.length > 0) {
-                var nytimesData = data.response.docs[0].headline.main;
-                var nytimesDataURL = data.response.docs[0].web_url;
-                // Need to set the content again after the data arrives.
-                setMarkerText(placeName, nytimesData, nytimesDataURL);
-            }
-        });
-
-        setMarkerText(placeName);
-        infowindow.open(map, this);
-
+        AddNYTimesLookupToMarker(marker, place.name);
     });
 }
 
+function selectOnlyThisMarker(marker) {
+    if (typeof marker === "undefined") throw Error("'marker' missing.");
 
+    // Stop all other markers from bouncing.
+    var listMarkers = theView.markers();
+    for (var i in listMarkers) {
+        var m = listMarkers[i];
+        m.setAnimation(null);
+    }
+
+    // and only animate this one.
+    animateMarker(marker);
+};
+
+function animateMarker(marker) {
+    if (typeof marker === "undefined") throw Error("'marker' missing.");
+    marker.setAnimation(google.maps.Animation.BOUNCE);
+};
 
 function removeMarker(marker) {
+    if (typeof marker === "undefined") throw Error("'marker' missing.");
     marker.setMap(null);
 };
 
-function setMarkerText(name, nytimesHeadline, nytimeURL) {
+function AddNYTimesLookupToMarker(marker, placeName) {
+    if (typeof marker === "undefined") throw Error("'marker' missing.");
+    if (typeof placeName === "undefined") throw Error("'placeName' missing.");
+
+    var nytimesURL = "http://api.nytimes.com/svc/search/v2/articlesearch.json?q="
+            + placeName + "&api-key=bd91481bf8a206b38397217ce23f51a7:2:73398314";
+
+    $.getJSON(nytimesURL, function (data) {
+        if (data.response.docs.length > 0) {
+            var nytimesData = data.response.docs[0].headline.main;
+            var nytimesDataURL = data.response.docs[0].web_url;
+            // Need to set the content again after the data arrives.
+            infowindow.setContent(getMarkerHTML(placeName, nytimesData, nytimesDataURL));
+        }
+    });
+
+    infowindow.setContent(getMarkerHTML(placeName));
+    infowindow.open(map, marker);
+};
+
+function getMarkerHTML(name, nytimesHeadline, nytimeURL) {
     if (typeof name === "undefined") throw Error("'name' missing.");
     var nytimesDataFound = typeof nytimesHeadline !== "undefined";
     if (nytimesDataFound && typeof nytimeURL === "undefined") {
@@ -115,6 +133,5 @@ function setMarkerText(name, nytimesHeadline, nytimeURL) {
             + "<a href='" + nytimeURL + "'>" + nytimesHeadline + "</a></div>";
     }
 
-    infowindow.setContent(html);
-}
-
+    return html;
+};

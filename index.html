@@ -23,7 +23,7 @@
                 <!--only make the item visible if name contains the search string.-->
                 <li data-bind="visible: 
     $data.toUpperCase().search($root.searchString().toUpperCase()) >= 0">
-                    <label data-bind="text: $data"></label>
+                    <label data-bind="text: $data, click: $root.selectPlace"></label>
                 </li>
             </ul>
         </div>
