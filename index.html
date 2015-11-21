@@ -1,0 +1,42 @@
+﻿<!DOCTYPE html>
+<html>
+<!--Trying to figure out cachine to cache some of the libraries.-->
+<!--<html lang="en" manifest="manifest.appcache">-->
+<head>
+    <title>Map Search</title>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!--For appropriate scaling on different devices.-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="bootstrap-3.3.5-dist/css/bootstrap-theme.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" media="all" href="main.css" />
+
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="searchbar col-lg-12">
+            <input type="text" data-bind="textInput: searchString"/>
+        </div>
+        <div class="places">
+            <ul data-bind="foreach: places">
+                <!--only make the item visible if name contains the search string.-->
+                <li data-bind="visible: 
+    $data.toUpperCase().search($root.searchString().toUpperCase()) >= 0">
+                    <label data-bind="text: $data"></label>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div id="map"></div>
+
+    <!--including libraries in their unique folders to help learn where stuff comes from.-->
+    <script src="jQuery/jquery-1.11.3.js" type="text/javascript"></script>
+    <script src="bootstrap-3.3.5-dist/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="knockout/knockout-3.3.0.js" type="text/javascript"></script>
+    <script defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCkd8JxryUhDkX17EBzWQCZN31cu45q-tE&signed_in=true&libraries=places&callback=initMap" type="text/javascript"></script>
+    <script src="js/main.js" type="text/javascript"></script>
+    <script src="js/google-maps.js" type="text/javascript"></script>
+</body>
+</html>
+

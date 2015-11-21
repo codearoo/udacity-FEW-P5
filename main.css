@@ -1,0 +1,26 @@
+﻿body {
+}
+
+/* make touchable things big enough for fingers. */
+a button {
+    min-width: 48px;
+    min-height: 48px;
+}
+
+.searchbar {
+    height: 50px;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+#map {
+    height: 100%;
+}
+
+.marker-name {
+    font-weight: bold;
+}
