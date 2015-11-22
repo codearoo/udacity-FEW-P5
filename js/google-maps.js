@@ -155,6 +155,9 @@ function AddNYTimesLookupToMarker(marker, placeName) {
             // Need to set the content again after the data arrives.
             infowindow.setContent(getMarkerHTML(placeName, nytimesData, nytimesDataURL));
         }
+        else {
+            infowindow.setContent(getMarkerHTML(placeName, "Boring place, no news"));
+        }
     }).fail(function () {
         infowindow.setContent(getMarkerHTML(placeName) + "Could not retrieve data.")
     });
@@ -163,18 +166,20 @@ function AddNYTimesLookupToMarker(marker, placeName) {
     infowindow.open(map, marker);
 };
 
-function getMarkerHTML(name, nytimesHeadline, nytimeURL) {
+function getMarkerHTML(name, nytimesHeadline, nytimesURL) {
     if (typeof name === "undefined") throw Error("'name' missing.");
-    var nytimesDataFound = typeof nytimesHeadline !== "undefined";
-    if (nytimesDataFound && typeof nytimeURL === "undefined") {
-        throw Error("'nytimeURL' required if 'nytimesHeadline' present.");
-    }
+    var nytimesHeadlineFound = typeof nytimesHeadline !== "undefined";
+    var nytimesURLFound = typeof nytimesURL !== "undefined";
 
     var html = "<div class='marker-name'>" + name + "</div>";
 
-    if (nytimesDataFound) {
+    if (nytimesHeadlineFound && nytimesURLFound) {
         html += "<div class='marker-nytimes-data'>"
-            + "<a href='" + nytimeURL + "'>" + nytimesHeadline + "</a></div>";
+            + "<a href='" + nytimesURL + "'>" + nytimesHeadline + "</a></div>";
+    }
+    else if (nytimesHeadlineFound) {
+        html += "<div class='marker-nytimes-data'>"
+            + nytimesHeadline + "</div>";
     }
 
     return html;
