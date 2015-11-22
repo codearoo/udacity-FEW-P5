@@ -7,13 +7,17 @@ a button {
 
 .searchbar {
     display: flex;
+    flex-wrap: wrap;
     width: auto;
 }
 
 .searchtextbox {
-    width:auto;
+    width: auto;
     background-color: yellow;
     font-size: x-large;
+    min-width: 10px;
+    padding-left: 5px;
+    margin-left: 5px;
 }
 
 html, body {
@@ -30,3 +34,4 @@ html, body {
 .marker-name {
     font-weight: bold;
 }
+
