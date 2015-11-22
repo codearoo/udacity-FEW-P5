@@ -35,3 +35,10 @@ html, body {
     font-weight: bold;
 }
 
+.errors {
+    color: red;
+}
+
+.clickable {
+    cursor: pointer;
+}

@@ -1,6 +1,10 @@
-﻿var map;
-var infowindow;
-var service;
+﻿'use strict';
+
+var map, infowindow, service;
+
+function googleMapError() {
+    theView.errors("There was a problem loading the Google Map.");
+}
 
 // async method that gets called when Google map returns.
 function initMap() {
@@ -23,7 +27,7 @@ function initMap() {
             location: pyrmont,
             radius: 5000,
             name: place,
-        }, callback);
+        }, callbackCreateMarkers);
     }
 
     // For all places in our model, add a marker.
@@ -34,7 +38,7 @@ function initMap() {
 }
 
 
-function callback(results, status) {
+function callbackCreateMarkers(results, status) {
     if (typeof results === "undefined") throw Error("'results' missing.");
     if (typeof status === "undefined") throw Error("'status' missing.");
 
@@ -44,7 +48,7 @@ function callback(results, status) {
         }
     }
     else {
-        console.log("Problem with Google Places service.");
+        theView.errors("Problem with Google Places service.");
     }
 }
 
@@ -70,7 +74,7 @@ function createMarker(place) {
             marker.setAnimation(null);
         else
             selectOnlyThisMarker(marker);
-    };
+    }
 
     google.maps.event.addListener(marker, 'click', function () {
         AddNYTimesLookupToMarker(marker, place.name);
@@ -89,7 +93,7 @@ function selectOnlyThisMarker(marker) {
 
     // and only animate this one.
     animateMarker(marker);
-};
+}
 
 function showOnlyTheseMarkers(markers) {
     // remove all markers.
@@ -101,12 +105,12 @@ function showOnlyTheseMarkers(markers) {
 
     // now only show the given markers IF the map is loaded.
     if (typeof map !== "undefined") {
-        for (var i in markers) {
-            var marker = markers[i];
-            marker.setMap(map);
+        for (var j in markers) {
+            var marker2 = markers[j];
+            marker2.setMap(map);
         }
     }
-};
+}
 
 function showOnlyMarkersInSearch() {
     // remove all markers.
@@ -119,35 +123,35 @@ function showOnlyMarkersInSearch() {
     // get places in the search and get the markers for them.
     // show only these markers.
     var listPlaces = theView.placesToShow();
-    for (var i in listPlaces) {
-        var place = listPlaces[i];
-        var marker = theView.GetMarkerByPlace(place);
-        marker.setMap(map);
+    for (var j in listPlaces) {
+        var place = listPlaces[j];
+        var marker2 = theView.GetMarkerByPlace(place);
+        marker2.setMap(map);
     }
 
-};
+}
 
 function animateMarker(marker) {
     if (typeof marker === "undefined") throw Error("'marker' missing.");
     marker.setAnimation(google.maps.Animation.BOUNCE);
-};
+}
 
 function showMarker(marker) {
     if (typeof marker === "undefined") throw Error("'marker' missing.");
     marker.setMap(map);
-};
+}
 
 function hideMarker(marker) {
     if (typeof marker === "undefined") throw Error("'marker' missing.");
     marker.setMap(null);
-};
+}
 
 function AddNYTimesLookupToMarker(marker, placeName) {
     if (typeof marker === "undefined") throw Error("'marker' missing.");
     if (typeof placeName === "undefined") throw Error("'placeName' missing.");
 
-    var nytimesURL = "http://api.nytimes.com/svc/search/v2/articlesearch.json?q="
-            + placeName + "&api-key=bd91481bf8a206b38397217ce23f51a7:2:73398314";
+    var nytimesURL = "http://api.nytimes.com/svc/search/v2/articlesearch.json?q=" +
+            placeName + "&api-key=bd91481bf8a206b38397217ce23f51a7:2:73398314";
 
     $.getJSON(nytimesURL, function (data) {
         if (data.response.docs.length > 0) {
@@ -160,12 +164,12 @@ function AddNYTimesLookupToMarker(marker, placeName) {
             infowindow.setContent(getMarkerHTML(placeName, "Boring place, no news"));
         }
     }).fail(function () {
-        infowindow.setContent(getMarkerHTML(placeName) + "Could not retrieve data.")
+        infowindow.setContent(getMarkerHTML(placeName) + "Could not retrieve data.");
     });
 
     infowindow.setContent(getMarkerHTML(placeName));
     infowindow.open(map, marker);
-};
+}
 
 function getMarkerHTML(name, nytimesHeadline, nytimesURL) {
     if (typeof name === "undefined") throw Error("'name' missing.");
@@ -175,13 +179,13 @@ function getMarkerHTML(name, nytimesHeadline, nytimesURL) {
     var html = "<div class='marker-name'>" + name + "</div>";
 
     if (nytimesHeadlineFound && nytimesURLFound) {
-        html += "<div class='marker-nytimes-data'>"
-            + "<a href='" + nytimesURL + "'>" + nytimesHeadline + "</a></div>";
+        html += "<div class='marker-nytimes-data'>" +
+            "<a href='" + nytimesURL + "'>" + nytimesHeadline + "</a></div>";
     }
     else if (nytimesHeadlineFound) {
-        html += "<div class='marker-nytimes-data'>"
-            + nytimesHeadline + "</div>";
+        html += "<div class='marker-nytimes-data'>" +
+            nytimesHeadline + "</div>";
     }
 
     return html;
-};
+}

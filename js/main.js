@@ -1,4 +1,5 @@
-﻿
+﻿'use strict';
+
 // The main ModelView used with Knockout.
 function ModelView() {
     var self = this;
@@ -12,13 +13,15 @@ function ModelView() {
     ]);
     self.searchString = ko.observable("");
     self.markers = ko.observableArray([]);
+    self.errors = ko.observable("");
 
     // dynamic array that will list places only containing
     // the searchString.
     self.placesToShow = ko.pureComputed(function () {
         var retvalue = [];
-        for (var i in self.places()) {
-            var place = self.places()[i]
+        var listPlaces = self.places();
+        for (var i in listPlaces) {
+            var place = listPlaces[i];
             if (self.IsPlaceInSearch(place)) {
                 retvalue.push(place);
             }
@@ -45,12 +48,6 @@ function ModelView() {
         self.markers()[name.toUpperCase()] = marker;
     };
 
-    self.RemoveMarker = function (name, marker) {
-        if (typeof name === "undefined") throw Error("'name' missing.");
-        if (typeof marker === "undefined") throw Error("'marker' missing.");
-        delete self.markers()[name];
-    };
-
     self.GetMarkerByPlace = function (name) {
         if (typeof name === "undefined") throw Error("'name' missing.");
         return self.markers()[name.toUpperCase()];
@@ -68,9 +65,10 @@ function ModelView() {
         return (name.toUpperCase().search(self.searchString().toUpperCase()) >= 0);
     };
 
-};
+}
 
 
 
 var theView = new ModelView();
 ko.applyBindings(theView);
+
