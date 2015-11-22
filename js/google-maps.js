@@ -4,7 +4,6 @@ var service;
 
 // async method that gets called when Google map returns.
 function initMap() {
-    //var pyrmont = { lat: -33.867, lng: 151.195 };
     var pyrmont = { lat: 38.925979, lng: -77.035176 };
 
     map = new google.maps.Map(document.getElementById('map'), {
@@ -100,10 +99,12 @@ function showOnlyTheseMarkers(markers) {
         marker.setMap(null);
     }
 
-    // now only show the given markers.
-    for (var i in markers) {
-        var marker = markers[i];
-        marker.setMap(map);
+    // now only show the given markers IF the map is loaded.
+    if (typeof map !== "undefined") {
+        for (var i in markers) {
+            var marker = markers[i];
+            marker.setMap(map);
+        }
     }
 };
 
