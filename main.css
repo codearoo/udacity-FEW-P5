@@ -1,6 +1,4 @@
-﻿body {
-}
-
+﻿
 /* make touchable things big enough for fingers. */
 a button {
     min-width: 48px;
@@ -8,17 +6,25 @@ a button {
 }
 
 .searchbar {
-    height: 50px;
+    display: flex;
+    width: auto;
+}
+
+.searchtextbox {
+    width:auto;
+    background-color: yellow;
+    font-size: x-large;
 }
 
 html, body {
     height: 100%;
-    margin: 0;
-    padding: 0;
+    margin: 5px;
+    padding: 5px;
 }
 
 #map {
-    height: 100%;
+    height: 60%;
+    bottom: auto;
 }
 
 .marker-name {

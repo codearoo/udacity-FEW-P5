@@ -14,9 +14,10 @@
 
 </head>
 <body>
-    <div class="container-fluid">
-        <div class="searchbar col-lg-12">
-            <input type="text" data-bind="textInput: searchString, event: { keyup: ShowSearchedMarkers }"/>
+    <div class="container">
+        <div class="searchbar row">
+            <label>Type to filter:</label>
+            <input class="searchtextbox" type="text" data-bind="textInput: searchString, event: { keyup: ShowSearchedMarkers }, hasFocus: true"/>
         </div>
         <div class="places">
             <ul data-bind="foreach: placesToShow">
